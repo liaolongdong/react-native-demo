@@ -7,6 +7,8 @@ import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
+import MineScreen from '../screens/MineScreen';
+
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
 });
@@ -53,8 +55,27 @@ SettingsStack.navigationOptions = {
   ),
 };
 
+const MineStack = createStackNavigator({
+  Mine: MineScreen
+});
+
+MineStack.navigationOptions = {
+  tabBarLabel: 'Mine',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={
+        Platform.OS === 'ios'
+          ? `ios-information-circle${focused ? '' : '-outline'}`
+          : 'md-information-circle'
+      }
+    />
+  ),
+}
+
 export default createBottomTabNavigator({
   HomeStack,
   LinksStack,
   SettingsStack,
+  MineStack
 });

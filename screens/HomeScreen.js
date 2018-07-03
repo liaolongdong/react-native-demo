@@ -1,59 +1,48 @@
 import React from 'react';
-import {
-  Image,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  Text,
-  Button,
-  Alert,
-  TouchableHighlight,
-  TouchableOpacity,
-  TouchableNativeFeedback,
-  TouchableWithoutFeedback,
-  View,
-  FlatList,
-  ActivityIndicator
-} from 'react-native';
+import { Image, Platform, ScrollView, StyleSheet, TextInput, Text, Button, Alert, TouchableHighlight, TouchableOpacity, TouchableNativeFeedback, TouchableWithoutFeedback, View, FlatList, ActivityIndicator, Switch } from 'react-native';
 import { WebBrowser } from 'expo';
 
-import { MonoText } from '../components/StyledText';
+// import { MonoText } from '../components/StyledText';
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
-    title: 'Home'
+    title: 'Home',
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       text: '',
       isLoading: true,
-      dataSource: []
+      dataSource: [],
+      switchValue: true,
+      inputValue: "You can change me!"
     };
   }
 
   componentDidMount = async () => {
-    // const movies = await this._getMoviesFromApiAsync();
-    // movies && this.setState({
-    //   isLoading: false,
-    //   dataSource: movies
-    // });
-
-    return fetch('https://facebook.github.io/react-native/movies.json')
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.setState({
-          isLoading: false,
-          dataSource: responseJson.movies,
-        }, function(){
-        });
-      })
-      .catch((error) =>{
-        console.error(error);
+    const movies = await this._getMoviesFromApiAsync();
+    movies &&
+      this.setState({
+        isLoading: false,
+        dataSource: movies,
       });
-  }
+
+    // return fetch('https://facebook.github.io/react-native/movies.json')
+    //   .then(response => response.json())
+    //   .then(responseJson => {
+    //     this.setState(
+    //       {
+    //         isLoading: false,
+    //         dataSource: responseJson.movies,
+    //       },
+    //       function() {}
+    //     );
+    //   })
+    //   .catch(error => {
+    //     console.error(error);
+    //   });
+  };
 
   _maybeRenderDevelopmentModeWarning() {
     if (__DEV__) {
@@ -65,8 +54,8 @@ export default class HomeScreen extends React.Component {
 
       return (
         <Text style={styles.developmentModeText}>
-          Development mode is enabled, your app will be slower but you can use useful development
-          tools. {learnMoreButton}
+          Development mode is enabled, your app will be slower but you can use
+          useful development tools. {learnMoreButton}
         </Text>
       );
     } else {
@@ -79,7 +68,9 @@ export default class HomeScreen extends React.Component {
   }
 
   _handleLearnMorePress = () => {
-    WebBrowser.openBrowserAsync('https://docs.expo.io/versions/latest/guides/development-mode');
+    WebBrowser.openBrowserAsync(
+      'https://docs.expo.io/versions/latest/guides/development-mode'
+    );
   };
 
   _handleHelpPress = () => {
@@ -90,23 +81,23 @@ export default class HomeScreen extends React.Component {
 
   _onPressButton = () => {
     Alert.alert('You tapped the button');
-  }
+  };
 
   _onLongPressButton = () => {
     Alert.alert('You long-pressed the button!');
-  }
+  };
 
-  /** 
+  /**
    *  使用fetch请求数据
    */
   _getMoviesFromApiAsync() {
     return new Promise((resolve, reject) => {
       fetch('https://facebook.github.io/react-native/movies.json')
-        .then((response) => response.json())
-        .then((responseJson) => {
+        .then(response => response.json())
+        .then(responseJson => {
           resolve(responseJson.movies);
         })
-        .catch((error) => {
+        .catch(error => {
           reject(error);
           console.error(error);
         });
@@ -132,14 +123,14 @@ export default class HomeScreen extends React.Component {
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   /**
    *  使用ajax请求数据
    */
   _getDataUseAjax = () => {
     const request = new XMLHttpRequest();
-    request.onreadystatechange = (e) => {
+    request.onreadystatechange = e => {
       if (request.readyState !== 4) {
         return;
       }
@@ -153,7 +144,7 @@ export default class HomeScreen extends React.Component {
 
     request.open('GET', 'https://facebook.github.io/react-native/movies.json');
     request.send();
-  }
+  };
 
   /**
    * 使用websocket
@@ -167,26 +158,44 @@ export default class HomeScreen extends React.Component {
       ws.send('something'); // send a message
     };
 
-    ws.onmessage = (e) => {
+    ws.onmessage = e => {
       // a message was received
       console.log(e.data);
     };
 
-    ws.onerror = (e) => {
+    ws.onerror = e => {
       // an error occurred
       console.log(e.message);
     };
 
-    ws.onclose = (e) => {
+    ws.onclose = e => {
       // connection closed
       console.log(e.code, e.reason);
     };
-  }
+  };
+
+  _handleToggleSwitch = () => this.setState(state => ({
+    switchValue: !state.switchValue
+  }));
+
+  _handleTextChange = inputValue => {
+    this.setState({ inputValue });
+  };
+
+  _handleButtonPress = () => {
+    const { navigate } = this.props.navigation;
+    navigate('Links', { name: 'Links' });
+  };
+  
+  _handleButtonPressRediret = () => {
+    const { navigate } = this.props.navigation;
+    navigate('Mine');
+  };
 
   render() {
     if (this.state.isLoading) {
       return (
-        <View style={{flex: 1, padding: 20}}>
+        <View style={{ flex: 1, padding: 20 }}>
           <ActivityIndicator />
         </View>
       );
@@ -235,7 +244,6 @@ export default class HomeScreen extends React.Component {
       //   </View> */}
       // </View>
 
-
       // Try setting `justifyContent` to `center`.
       // Try setting `flexDirection` to `row`.
       // <View style={{
@@ -249,27 +257,30 @@ export default class HomeScreen extends React.Component {
       //   <View style={{width: 50, height: 50, backgroundColor: 'steelblue'}} />
       // </View>
 
-      <ScrollView style={{padding: 10}}>
+      <ScrollView style={{ padding: 10 }}>
         <TextInput
-          style={{height: 40}}
-          placeholder='Type here to translate!'
-          onChangeText={(text) => this.setState({text})}
+          style={{ height: 40 }}
+          placeholder="Type here to translate!"
+          onChangeText={text => this.setState({ text })}
         />
-        <Text style={{padding: 10, fontSize: 42}}>
-          {this.state.text.split(' ')
-            .map((word) => word && '🍕')
+        <Text style={{ padding: 10, fontSize: 42 }}>
+          {this.state.text
+            .split(' ')
+            .map(word => word && '🍕')
             .join(' ')}
           {/* {this.state.text} */}
         </Text>
         <View style={styles.buttonContainer}>
           <Button
             onPress={this._onPressButton}
-            title='Press me'
-            color='#841584'
+            title="Press me"
+            color="#841584"
           />
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableHighlight onPress={this._onPressButton} underlayColor='white'>
+          <TouchableHighlight
+            onPress={this._onPressButton}
+            underlayColor="white">
             <View style={styles.button}>
               <Text style={styles.buttonText}>TouthableHighlight</Text>
             </View>
@@ -279,47 +290,80 @@ export default class HomeScreen extends React.Component {
               <Text style={styles.buttonText}>TouchableOpacity</Text>
             </View>
           </TouchableOpacity>
-          {Platform.OS === 'android'
-            ? <TouchableNativeFeedback
-                onPress={this._onPressButton}
-                background={Platform.OS === 'android' ? TouchableNativeFeedback.SelectableBackground() : ''}
-              >
-                <View style={styles.button}>
-                  <Text style={styles.buttonText}>TouchableNativeFeedback</Text>
-                </View>
-              </TouchableNativeFeedback>
-            : <TouchableWithoutFeedback
-                onPress={this._onPressButton}
-                >
+          {Platform.OS === 'android' ? (
+            <TouchableNativeFeedback
+              onPress={this._onPressButton}
+              background={
+                Platform.OS === 'android'
+                  ? TouchableNativeFeedback.SelectableBackground()
+                  : ''
+              }>
+              <View style={styles.button}>
+                <Text style={styles.buttonText}>TouchableNativeFeedback</Text>
+              </View>
+            </TouchableNativeFeedback>
+          ) : (
+            <TouchableWithoutFeedback onPress={this._onPressButton}>
               <View style={styles.button}>
                 <Text style={styles.buttonText}>TouchableWithoutFeedback</Text>
               </View>
-            </TouchableWithoutFeedback>}
-            <TouchableHighlight onPress={this._onPressButton} onLongPress={this._onLongPressButton} underlayColor="gray">
-              <View style={styles.button}>
-                <Text style={styles.buttonText}>Touchable with Long Press</Text>
-              </View>
-            </TouchableHighlight>
+            </TouchableWithoutFeedback>
+          )}
+          <TouchableHighlight
+            onPress={this._onPressButton}
+            onLongPress={this._onLongPressButton}
+            underlayColor="gray">
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>Touchable with Long Press</Text>
+            </View>
+          </TouchableHighlight>
+          {/* Switch */}
+          <Switch
+            onValueChange={this._handleToggleSwitch}
+            value={this.state.switchValue}
+          />
+          <TextInput
+            value={this.state.inputValue}
+            onChangeText={this._handleTextChange}
+            style={{ width: 200, height: 44, padding: 8 }}
+          />
         </View>
-        {/* network（请求数据） */} 
+        {/* network（请求数据） */}
         {/* fetch */}
-        <View style={{flex: 1, paddingTop:20}}>
-        <FlatList
-          data={this.state.dataSource}
-          renderItem={({item}) => <Text>{item.title}, {item.releaseYear}</Text>}
-          keyExtractor={(item, index) => `${index}-${item}`}
-        />
-      </View>
+        <View style={{ flex: 1, paddingTop: 20 }}>
+          <FlatList
+            data={this.state.dataSource}
+            renderItem={({ item }) => (
+              <Text>
+                {item.title}, {item.releaseYear}
+              </Text>
+            )}
+            keyExtractor={(item, index) => `${index}-${item}`}
+          />
+        </View>
+        <View style={{flex: 1, marginBottom: 50}}>
+          <Text>--------------- use react-navigator ------------</Text>
+          {/* 使用react-navigation导航 */}
+          <Button
+            title="navigate to links screens"
+            onPress={this._handleButtonPress}
+          />
+          <Text>------------- use navigatorIOS --------------</Text>
+          <Button
+            title="navigate to mine screens"
+            onPress={this._handleButtonPressRediret}
+          />
+        </View>
       </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
+  // container: {
+  //   flex: 1,
+  //   backgroundColor: '#fff',
+  // },
   developmentModeText: {
     marginBottom: 20,
     color: 'rgba(0,0,0,0.4)',
@@ -327,86 +371,97 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     textAlign: 'center',
   },
-  contentContainer: {
-    paddingTop: 30,
-  },
-  welcomeContainer: {
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  welcomeImage: {
-    width: 100,
-    height: 80,
-    resizeMode: 'contain',
-    marginTop: 3,
-    marginLeft: -10,
-  },
-  getStartedContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50,
-  },
-  homeScreenFilename: {
-    marginVertical: 7,
-  },
-  codeHighlightText: {
-    color: 'rgba(96,100,109, 0.8)',
-  },
-  codeHighlightContainer: {
-    backgroundColor: 'rgba(0,0,0,0.05)',
-    borderRadius: 3,
-    paddingHorizontal: 4,
-  },
-  getStartedText: {
-    flex: 375,
-    backgroundColor: 'blue',
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    lineHeight: 24,
-    textAlign: 'center',
-  },
-  tabBarInfoContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOffset: { height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
-      },
-      android: {
-        elevation: 20,
-      },
-    }),
-    alignItems: 'center',
-    backgroundColor: '#fbfbfb',
-    paddingVertical: 20,
-  },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    textAlign: 'center',
-  },
-  navigationFilename: {
-    marginTop: 5,
-  },
-  helpContainer: {
-    flex: 1,
-    backgroundColor: 'yellow',
-    marginTop: 15,
-    alignItems: 'center',
-  },
-  helpLink: {
-    paddingVertical: 15,
-  },
+  // contentContainer: {
+  //   paddingTop: 30,
+  // },
+  // welcomeContainer: {
+  //   alignItems: 'center',
+  //   marginTop: 10,
+  //   marginBottom: 20,
+  // },
+  // welcomeImage: {
+  //   width: 100,
+  //   height: 80,
+  //   resizeMode: 'contain',
+  //   marginTop: 3,
+  //   marginLeft: -10,
+  // },
+  // getStartedContainer: {
+  //   alignItems: 'center',
+  //   marginHorizontal: 50,
+  // },
+  // homeScreenFilename: {
+  //   marginVertical: 7,
+  // },
+  // codeHighlightText: {
+  //   color: 'rgba(96,100,109, 0.8)',
+  // },
+  // codeHighlightContainer: {
+  //   backgroundColor: 'rgba(0,0,0,0.05)',
+  //   borderRadius: 3,
+  //   paddingHorizontal: 4,
+  // },
+  // getStartedText: {
+  //   flex: 375,
+  //   backgroundColor: 'blue',
+  //   fontSize: 17,
+  //   color: 'rgba(96,100,109, 1)',
+  //   lineHeight: 24,
+  //   textAlign: 'center',
+  // },
+  // tabBarInfoContainer: {
+  //   position: 'absolute',
+  //   bottom: 0,
+  //   left: 0,
+  //   right: 0,
+  //   ...Platform.select({
+  //     ios: {
+  //       shadowColor: 'black',
+  //       shadowOffset: { height: -3 },
+  //       shadowOpacity: 0.1,
+  //       shadowRadius: 3,
+  //     },
+  //     android: {
+  //       elevation: 20,
+  //     },
+  //   }),
+  //   alignItems: 'center',
+  //   backgroundColor: '#fbfbfb',
+  //   paddingVertical: 20,
+  // },
+  // tabBarInfoText: {
+  //   fontSize: 17,
+  //   color: 'rgba(96,100,109, 1)',
+  //   textAlign: 'center',
+  // },
+  // navigationFilename: {
+  //   marginTop: 5,
+  // },
+  // helpContainer: {
+  //   flex: 1,
+  //   backgroundColor: 'yellow',
+  //   marginTop: 15,
+  //   alignItems: 'center',
+  // },
+  // helpLink: {
+  //   paddingVertical: 15,
+  // },
   helpLinkText: {
     fontSize: 14,
     color: '#2e78b7',
   },
+  buttonContainer: {
+    flex: 1,
+    ...Platform.select({
+      ios: {
+        backgroundColor: '#609afb'
+      },
+      android: {
+        backgroundColor: 'blue'
+      }
+    })
+  },
   button: {
-    marginBottom: 20
-  }
+    marginBottom: 20,
+  },
 });
